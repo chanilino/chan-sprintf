@@ -8,5 +8,5 @@ addons:
     - cmake
     - check
 
-scripts: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf 
+script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf 
 
