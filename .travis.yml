@@ -4,13 +4,8 @@ compiler:
 before_install:
   - sudo add-apt-repository 'ppa:axel-huebl/cmake3.1' -y
   - sudo apt-get update -q
-    #  - sudo apt-get install cmake -y
+  - sudo apt-get install cmake check -y
 
-addons:
-  apt:
-    packages:
-    - cmake
-    - check
 
 script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf 
 
