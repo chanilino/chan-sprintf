@@ -2,7 +2,7 @@ language: c
 compiler:
         - gcc
 before_install:
-  - sudo add-apt-repository 'ppa:axel-huebl/cmake3.1' -y
+  - sudo add-apt-repository 'ppa:george-edison55/precise-backports' -y
   - sudo apt-get update -q
   - sudo apt-get install cmake check -y
 
