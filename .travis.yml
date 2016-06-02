@@ -4,8 +4,10 @@ compiler:
         - clang
 addons:
   apt:
+    sources:
+    - sourceline: 'ppa:andykimpe/cmake3'
     packages:
-    - cmake
+    - cmake3
     - check
 
 script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf 
