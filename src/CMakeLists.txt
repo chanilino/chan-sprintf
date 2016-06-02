@@ -20,11 +20,12 @@ set_target_properties(chanprintf_shared PROPERTIES OUTPUT_NAME chanprintf CLEAN_
 set_target_properties(chanprintf_static PROPERTIES OUTPUT_NAME chanprintf CLEAN_DIRECT_OUTPUT 1)
 
 set(
-	LIB_DEP_CHANLOG
+	LIB_DEP_CHAN_SPRINTF
+	m
 )
 include_directories("./")
-target_link_libraries(chanprintf_shared ${LIB_DEP_CHANLOG})
-target_link_libraries(chanprintf_static ${LIB_DEP_CHANLOG})
+target_link_libraries(chanprintf_shared ${LIB_DEP_CHAN_SPRINTF})
+target_link_libraries(chanprintf_static ${LIB_DEP_CHAN_SPRINTF})
 
 
 install(TARGETS chanprintf_shared chanprintf_static 
