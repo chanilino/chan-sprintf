@@ -1,12 +1,7 @@
 language: c
 compiler:
         - gcc
-#before_install:
-#  - sudo add-apt-repository 'ppa:george-edison55/precise-backports' -y
-#  - sudo apt-get update -q
-#  - sudo apt-get upgrade -y
-#install:
-#  - sudo apt-get install cmake cmake-data check -y
+        - clang
 addons:
         apt:
                 sources:
