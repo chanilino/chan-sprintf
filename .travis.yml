@@ -12,5 +12,10 @@ addons:
                         - check
 
 
-script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf 
-
+script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
+after_failure:
+        - cat /tmp/sumary_test.txt
+        - rm /tmp/sumary_test.txt
+after_success:
+        - cat /tmp/sumary_test.txt
+        - rm /tmp/sumary_test.txt
