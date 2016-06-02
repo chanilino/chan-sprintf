@@ -5,9 +5,9 @@ compiler:
 addons:
   apt:
     sources:
-    - sourceline: 'ppa:andykimpe/cmake3'
+    - sourceline: 'ppa:axel-huebl/cmake3.1'
     packages:
-    - cmake3
+    - cmake
     - check
 
 script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf 
