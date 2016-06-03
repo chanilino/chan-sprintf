@@ -5,9 +5,6 @@ addons:
             -  george-edison55-precise-backports # cmake 3.2.3 
             -  ubuntu-toolchain-r-test # gcc versions
         packages: &default_packages
-            - gcc-4.9
-            - gcc-5
-            - gcc-6
             - cmake
             - cmake-data
             - check
