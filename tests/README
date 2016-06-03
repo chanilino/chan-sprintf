@@ -1,0 +1,2 @@
+CK_VERBOSITY: How much output to emit, accepts: “silent”, “minimal”, “normal”, “subunit”, or “verbose”. See section SRunner Output. 
+env CK_RUN_SUITE="Functional printf" ./tests-printf
