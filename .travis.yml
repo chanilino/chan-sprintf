@@ -19,7 +19,7 @@ addons:
                         - check
 
 
-script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
+script: ls -l /usr/bin/gc* ; mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
 
 after_failure:
         - cat /tmp/sumary_test.txt
