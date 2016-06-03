@@ -204,10 +204,15 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 						  ++p_in; 
 						  printed = true;
 						  break;
-				case 'f': case 'F':
 				case 'g': case 'G':
+				case 'f': case 'F':
+                        //TODO: add default precision to all double
+                          p_out = dtoa(va_arg(ap, double), p_out, precision, false);
+						  ++p_in;
+						  printed = true;
+						  break;
 				case 'e': case 'E':
-						  p_out = dtoa(va_arg(ap, double), p_out, precision );
+						  p_out = dtoa(va_arg(ap, double), p_out, precision, true );
 						  ++p_in;
 						  printed = true;
 						  break;

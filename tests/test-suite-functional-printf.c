@@ -176,7 +176,57 @@ START_TEST(test_exp)
     for(i = 0; i < sizeof(tests_exp_numbers)/sizeof(tests_exp_numbers[0]); i ++){
         n_sprintf = sprintf(str_sprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value );
         n_csprintf = c_sprintf( str_csprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value);
+        if(tests_exp_numbers[i].check_vs_sprintf){
+    		ck_assert_msg( strcmp(str_sprintf, str_csprintf) == 0, 
+                   "Error String: i=%d: sprintf: '%s' != result: '%s'", 
+                   i, str_sprintf, str_csprintf );
+		    ck_assert_msg(n_sprintf == n_csprintf,
+				"Error return: i=%d: sprintf len: %d != n_csprintf : %d in '%s'", 
+    				i, n_sprintf, n_csprintf, str_sprintf
+				);
+        }else{
+    		ck_assert_msg(  strcmp(tests_exp_numbers[i].expected_string, str_csprintf) == 0, 
+                    "Error String: i=%d: expected: '%s' != result: '%s' => sprintf: %d: '%s'", 
+                    i, tests_exp_numbers[i].expected_string, str_csprintf,
+                    n_sprintf, str_sprintf );
+		    ck_assert_msg(tests_exp_numbers[i].expected_return == n_csprintf,
+				"Error return: expected len: %d != n_csprintf : %d in %d:'%s'", 
+				tests_exp_numbers[i].expected_return, n_csprintf,
+				i, tests_exp_numbers[i].expected_string
+				);
+        }
 
+
+	}
+}
+END_TEST
+
+START_TEST(test_float)
+{
+	char str_csprintf[512];
+	char str_sprintf[512];
+	int i, n_csprintf, n_sprintf;
+	double_test_pair tests_exp_numbers [] = {
+		{"%.5f", true, 3.5f, NULL, -1},
+		{"%.5f", true, -3.5f, NULL, -1},
+		{"%.5f", true, 9999999999999999999999999999.99999999999f*9999999999999999.0f, NULL, -1},
+		{"%.5f", true, -9999999999999999999999999999.99999999999f*9999999999999999.0f, NULL, -1},
+		{"%.5f", true, 0, NULL, -1},
+		{"%.5f", true, 3.5458730589043f, NULL, -1},
+		{"%.5f", true, -3.5458730589043f, NULL, -1},
+		{"%10.4f", false, 3.5458730589043f, "3.5458", 6},
+		{"%10.4f", false, -3.5458730589043f, "-3.5458", 7},
+		{"%07.5f", true, 334243.5458730589043f, NULL, -1},
+		{"%010.5f", false, -43433.5458730589043f, "-43433.54687", 12},
+		{"%010.5f", true, 393824092389048029343234243.5458730589043f, NULL, -1},
+		{"%010.5f", true, -438374297892438974433.5458730589043f, NULL , -1},
+	};
+
+    for(i = 0; i < sizeof(tests_exp_numbers)/sizeof(tests_exp_numbers[0]); i ++){
+        n_sprintf = sprintf(str_sprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value );
+        printf("sprintf: '%s'\n", str_sprintf);
+        n_csprintf = c_sprintf( str_csprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value);
+        printf("c_sprintf: '%s'\n", str_csprintf);
         if(tests_exp_numbers[i].check_vs_sprintf){
     		ck_assert_msg( strcmp(str_sprintf, str_csprintf) == 0, 
                    "Error String: i=%d: sprintf: '%s' != result: '%s'", 
@@ -271,6 +321,10 @@ Suite* suite_functional_printf(void) {
 	TCase* tc_exp = tcase_create("Test exp");
 	tcase_add_test(tc_exp, test_exp);
 	suite_add_tcase(s, tc_exp);
+	
+	TCase* tc_float = tcase_create("Test float");
+	tcase_add_test(tc_float, test_float);
+	suite_add_tcase(s, tc_float);
 	
 	TCase* tc_string = tcase_create("Test string");
 	tcase_add_test(tc_string, test_string);

@@ -22,7 +22,7 @@ static inline void mem_reverse(char * ptr, char* ptr_end){
 /**
    * Double to ASCII
     */
-static inline char * dtoa(double n,char *s,  int precision_with) {
+static inline char * dtoa(double n,char *s,  int precision_with, bool use_exp) {
 //    double PRECISION = pow(10, -(precision_with+1));
     if(precision_with <= 0){
         precision_with =1;
@@ -49,10 +49,12 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
         while(precision_with--> 0){
                *s++ = '0';
         }
-		*s++ = 'e';
-		*s++ = '+';
-		*s++ = '0';
-		*s++ = '0';
+        if (use_exp) {
+            *s++ = 'e';
+            *s++ = '+';
+            *s++ = '0';
+            *s++ = '0';
+        }
 		return s;
 	} else {
 		int digit, m, m1 = 0;
@@ -61,11 +63,10 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 			n = -n;
 		// calculate magnitude
 		m = log10(n);
-		int useExp = (m >= 1 || (neg && m >= 1) || m <= -1);
 		if (neg)
 			*(c++) = '-';
 		// set up for scientific notation
-		if (useExp) {
+		if (use_exp) {
 			if (m < 0)
 				m -= 1.0;
 			n = n / pow(10.0, m);
@@ -75,10 +76,12 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 		if (m < 1.0) {
 			m = 0;
 		}
+        printf("m : %d prec: %d\n", m, precision_with);
 		// convert the number
         while(precision_with > 0){
 //		while (n > PRECISION || m >= 0) {
 			double weight = pow(10.0, m);
+//            printf("weight: %f\n", weight);
 			if (weight > 0 && !isinf(weight)) {
 				digit = floor(n / weight);
 				n -= (digit * weight);
@@ -93,12 +96,10 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 			m--;
 		}
 		
-//        if (m > 0) {
-        if (useExp) {
+        if (use_exp) {
 			// convert the exponent
-//			int i, j;
 			*(c++) = 'e';
-			if (m1 > 0) {
+			if (m1 >= 0) {
 				*(c++) = '+';
 			} else {
 				*(c++) = '-';
@@ -116,11 +117,6 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
                 m++;
             }
             mem_reverse(c - m, c-1);
-		}else{
-			*c++ = 'e';
-			*c++ = '+';
-			*c++ = '0';
-			*c++ = '0';
 		}
 		
 
