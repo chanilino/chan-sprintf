@@ -18,7 +18,7 @@ matrix:
                 sources:
                     - *default_sources
 
-        - compiler: clang-3.4
+        - compiler: /usr/local/clang-3.4/bin/clang
           addons:
             apt:
                 packages:
@@ -53,7 +53,7 @@ matrix:
                 sources:
                     - *default_sources
 
-script:  find / -name clang* ; mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
+script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
 
 after_failure:
     - cat /tmp/sumary_test.txt
