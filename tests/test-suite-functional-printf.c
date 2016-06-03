@@ -24,6 +24,8 @@ START_TEST(test_integer)
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "%d:%d:%d", 7, 4, 0);
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MAX %d", INT_MAX);
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MIN %d", INT_MIN);
+    // %i
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "Hola %i", 3534555);
 
     compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5d'", 7);
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5d'", INT_MAX);
@@ -83,6 +85,8 @@ START_TEST(test_long)
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "%ld", -5435432542l);
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MAX %ld", LONG_MAX);
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MIN %ld", LONG_MIN);
+	// %i
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "Hola %li", 3534535547l);
     
     compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5ld'", 72342l);
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5ld'", LONG_MAX);
