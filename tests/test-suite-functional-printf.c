@@ -145,6 +145,7 @@ START_TEST(test_long)
 END_TEST
 
 typedef struct{
+    const char* fmt;
 	double input_value;
 	const char * expected_string;
 	int expected_return;
@@ -153,23 +154,37 @@ typedef struct{
 START_TEST(test_exp)
 {
 	char str_csprintf[512];
-	int i, n_csprintf;
+	char str_sprintf[512];
+	int i, n_csprintf, n_sprintf;
 	double_test_pair tests_exp_numbers [] = {
-		{3.5f, "3.5e+00", 7},
-		{-3.5f, "-3.5e+00", 8},
-		{3.5458730589043f, "3.54587e+00", 11},
-		{-3.5458730589043f, "-3.54587e+00", 12},
-		{0, "0", 1},
-		{9999999999999999999999999999.99999999999f*9999999999999999.0f, "inf", 3},
-		{-9999999999999999999999999999.99999999999f*9999999999999999.0f, "-inf", 4},
+		{"%.5e", 3.5f, "3.5e+00", 7},
+		{"%.5e", -3.5f, "-3.5e+00", 8},
+		{"%.5e", 3.5458730589043f, "3.54587e+00", 11},
+		{"%.5e", -3.5458730589043f, "-3.54587e+00", 12},
+		{"%10.4e", 3.5458730589043f, "3.5459e+00", 10},
+		{"%10.4e", -3.5458730589043f, "-3.5459e+00", 11},
+		{"%07.5e", 334243.5458730589043f, "0000000003.54587e+00", 11},
+		{"%010.5e", -43433.5458730589043f, "-3.54587e+00", 12},
+		{"%010.5e", 393824092389048029343234243.5458730589043f, "3.54587e+00", 11},
+		{"%010.5e", -438374297892438974433.5458730589043f, "-3.54587e+00", 12},
+		{"%.5e", 0, "0", 1},
+		{"%.5e", 9999999999999999999999999999.99999999999f*9999999999999999.0f, "inf", 3},
+		{"%.5e", -9999999999999999999999999999.99999999999f*9999999999999999.0f, "-inf", 4},
 	};
 	for(i = 0; i < sizeof(tests_exp_numbers)/sizeof(tests_exp_numbers[0]); i ++){
-		n_csprintf = c_sprintf( str_csprintf, "%.5e", tests_exp_numbers[i].input_value);
-		ck_assert_str_eq(tests_exp_numbers[i].expected_string, str_csprintf);
+        n_sprintf = sprintf(str_sprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value );
+        
+        n_csprintf = c_sprintf( str_csprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value);
+
+		ck_assert_msg(  strcmp(tests_exp_numbers[i].expected_string, str_csprintf) == 0, 
+                "i=%d: expected: '%s' != result: '%s' => sprintf: %d: '%s'", 
+                i, tests_exp_numbers[i].expected_string, str_csprintf,
+                n_sprintf, str_sprintf );
+
 		ck_assert_msg(tests_exp_numbers[i].expected_return == n_csprintf,
-				"expected len: %d != n_csprintf : %d in '%s'", 
+				"expected len: %d != n_csprintf : %d in %d:'%s'", 
 				tests_exp_numbers[i].expected_return, n_csprintf,
-				tests_exp_numbers[i].expected_string
+				i, tests_exp_numbers[i].expected_string
 				);
 
 	}
