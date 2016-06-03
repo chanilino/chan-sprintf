@@ -42,7 +42,10 @@ static inline char * c_round_str(char *s, char ** p, double n){
 /**
    * Double to ASCII
     */
-static inline char * dtoa(double n,char *s,  double PRECISION) {
+static inline char * dtoa(double n,char *s,  int precision_with) {
+    double PRECISION = pow(10, -(precision_with+1));
+    char* p_dot = NULL;
+	char *c = s;
 	// handle special cases
 	if (isnan(n)) {
 		*s++ = 'n';
@@ -63,7 +66,6 @@ static inline char * dtoa(double n,char *s,  double PRECISION) {
 		return s;
 	} else {
 		int digit, m, m1 = 0;
-		char *c = s;
 		int neg = (n < 0);
 		if (neg)
 			n = -n;
@@ -91,20 +93,22 @@ static inline char * dtoa(double n,char *s,  double PRECISION) {
 				n -= (digit * weight);
 				*(c++) = '0' + digit;
 			}
-			if (m == 0 && n > 0)
+			if (m == 0 && n > 0){
 				*(c++) = '.';
+                p_dot = c;   
+            }
 			m--;
 		}
 		
 //		printf("*C= %c\n", *(c-1));
-//		c_round_str(s, &c,n );		
-		if(n > 0 && ((*(--c)) > '5')){
-			*(c-1) = (*(c-1)) +1;		
-		}else if(n < 0  && ((*(c)) < '6')){
-			*(c-1) = (*(c-1)) -1;		
-		
-		}
-		if (useExp) {
+//		c_round_str(s, &c,n );
+        int pre = precision_with - (c - p_dot);
+        printf("n= %d\n", pre);
+	    while(pre--> 0){
+			*(c++) = '0';
+        }
+        
+        if (useExp) {
 			// convert the exponent
 			int i, j;
 			*(c++) = 'e';
@@ -137,9 +141,9 @@ static inline char * dtoa(double n,char *s,  double PRECISION) {
 		
 
 		*(c) = '\0';
-		s = c;
+        printf("result= %s\n", s );
 	}
-	return s;
+	return c;
 }
 
 

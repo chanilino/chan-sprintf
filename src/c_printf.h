@@ -207,7 +207,7 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 				case 'f': case 'F':
 				case 'g': case 'G':
 				case 'e': case 'E':
-						  p_out = dtoa(va_arg(ap, double), p_out, pow(10, -(precision+1)));
+						  p_out = dtoa(va_arg(ap, double), p_out, precision );
 						  ++p_in;
 						  printed = true;
 						  break;
