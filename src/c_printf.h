@@ -49,18 +49,17 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 	int qualifier;		/* 'h', 'l', or 'L' for integer fields */
 	int number_tmp;
 	unsigned long long num;
-	char* s;
+	char* str_tmp;
 	char sign;
 	int len;
 	*p_out = 0;
 	while(1){
-		while(*p_in != 0 && *p_in != '%' ){
-			*p_out++ = *p_in++;
-		}
-		if(*p_in == 0){
-			break;
-		}
-
+        while(*p_in != 0 && *p_in != '%' ){
+            *p_out++ = *p_in++;
+        }
+        if(*p_in == 0){
+            break;
+        }
 		flags = 0;
 		field_width = -1;
 		precision = -1;
@@ -171,7 +170,7 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 							  field_width = 2*sizeof(void *);
 							  flags |= ZEROPAD;
 						  }
-						  str = number_c(str,
+						  p_out = number_c(p_out,
 								  (unsigned long) va_arg(ap, void *), 16,
 								  field_width, precision, flags, 0, 0);
 						  ++p_in; 
@@ -180,13 +179,13 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 
 						  // String
 				case 's':
-						  s = va_arg(ap, char *);
-						  if (!s){	
-							  s = (char*)NULL_STRING;
+						  str_tmp = va_arg(ap, char *);
+						  if (!str_tmp){	
+							  str_tmp = (char*)NULL_STRING;
 						  }
-						  len = strnlen(s, precision);
+						  len = strnlen(str_tmp, precision);
 						  if (!(flags & LEFT)) PADDING(p_out, field_width, ' ', len - 1);
-                          memcpy(p_out, s, len);
+                          memcpy(p_out, str_tmp, len);
                           p_out += len;
 						  PADDING(p_out, field_width, ' ', len - 1);
 						  ++p_in; 
