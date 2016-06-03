@@ -2,6 +2,7 @@
 #include <check.h>
 #include <printf.h>
 #include <string.h>
+#include <limits.h>
 #include "c_printf.h"
 #include "tests-printf.h"
 
@@ -20,7 +21,28 @@ START_TEST(test_integer)
 	int n_sprintf, n_csprintf;
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "Hola %d", 7);
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "%d:%d:%d", 7, 4, 0);
-	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "%d", -5);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MAX %d", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MIN %d", INT_MIN);
+
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5d'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5d'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5d'", INT_MIN);
+	
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%-5d'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%-5d'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%-5d'", INT_MIN);
+	
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%.5d'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%.5d'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%.5d'", INT_MIN);
+	
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%3.5d'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%3.5d'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%3.5d'", INT_MIN);
+    
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%-3.5d'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%-3.5d'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%-3.5d'", INT_MIN);
 }
 END_TEST
 
