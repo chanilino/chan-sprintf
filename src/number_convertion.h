@@ -65,23 +65,34 @@ static inline char * dtoa(double n,char *s,  int precision_with, bool use_exp) {
 		m = log10(n);
 		if (neg)
 			*(c++) = '-';
-		// set up for scientific notation
+
+		// This is to avoid overflows
+		if(! use_exp){
+			use_exp = (m >= 14 || (neg && m >= 9) || m <= -9);
+		}
+   
+     	// set up for scientific notation
 		if (use_exp) {
 			if (m < 0)
 				m -= 1.0;
 			n = n / pow(10.0, m);
 			m1 = m;
 			m = 0;
+		}else{
 		}
-		if (m < 1.0) {
+	
+        if (m < 1.0) {
 			m = 0;
 		}
-        printf("m : %d prec: %d\n", m, precision_with);
+//        printf("m : %d prec: %d\n", m, precision_with);
 		// convert the number
         while(precision_with > 0){
 //		while (n > PRECISION || m >= 0) {
 			double weight = pow(10.0, m);
 //            printf("weight: %f\n", weight);
+            if(weight <= 0){
+                return c;
+            }
 			if (weight > 0 && !isinf(weight)) {
 				digit = floor(n / weight);
 				n -= (digit * weight);

@@ -214,19 +214,18 @@ START_TEST(test_float)
 		{"%.5f", true, 0, NULL, -1},
 		{"%.5f", true, 3.5458730589043f, NULL, -1},
 		{"%.5f", true, -3.5458730589043f, NULL, -1},
+		// Round
 		{"%10.4f", false, 3.5458730589043f, "3.5458", 6},
 		{"%10.4f", false, -3.5458730589043f, "-3.5458", 7},
 		{"%07.5f", true, 334243.5458730589043f, NULL, -1},
-		{"%010.5f", false, -43433.5458730589043f, "-43433.54687", 12},
-		{"%010.5f", true, 393824092389048029343234243.5458730589043f, NULL, -1},
-		{"%010.5f", true, -438374297892438974433.5458730589043f, NULL , -1},
+		// Overflow go to exp notation
+		{"%010.5f", false, -438374297892438974433.5458730589043f, "-4.38374e+20", 12 },
+		{"%010.5f", false, 393824092389048029343234243.5458730589043f,"3.93824e+26" , 11},
 	};
 
     for(i = 0; i < sizeof(tests_exp_numbers)/sizeof(tests_exp_numbers[0]); i ++){
         n_sprintf = sprintf(str_sprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value );
-        printf("sprintf: '%s'\n", str_sprintf);
         n_csprintf = c_sprintf( str_csprintf, tests_exp_numbers[i].fmt, tests_exp_numbers[i].input_value);
-        printf("c_sprintf: '%s'\n", str_csprintf);
         if(tests_exp_numbers[i].check_vs_sprintf){
     		ck_assert_msg( strcmp(str_sprintf, str_csprintf) == 0, 
                    "Error String: i=%d: sprintf: '%s' != result: '%s'", 
