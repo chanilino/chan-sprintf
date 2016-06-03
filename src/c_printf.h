@@ -4,7 +4,6 @@
 #include <string.h>
 #include "number_convertion.h"
 
-#define NULL_STRING "<NULL>"
 
 static inline int c_vsprintf(char* str, const char *format, va_list ap);
 static inline int c_sprintf(char* str, const char *format, ...)
@@ -181,7 +180,7 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 				case 's':
 						  str_tmp = va_arg(ap, char *);
 						  if (!str_tmp){	
-							  str_tmp = (char*)NULL_STRING;
+							  str_tmp = (char*) "(null)";
 						  }
 						  len = strnlen(str_tmp, precision);
 						  if (!(flags & LEFT)) PADDING(p_out, field_width, ' ', len - 1);

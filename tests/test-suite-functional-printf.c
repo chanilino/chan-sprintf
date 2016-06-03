@@ -173,9 +173,11 @@ START_TEST(test_string)
 	char str_sprintf[512];
 	char str_csprintf[512];
 	int n_sprintf, n_csprintf;
+    const char * NULL_STR = NULL;
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "Hola %s", "Mundo");
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "%s:%s:%s", "Mi Mundo", "es", "asin");
 	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "Nothing '%s'","" );
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "NULL '%s'", NULL_STR);
 }
 END_TEST
 
