@@ -3,7 +3,44 @@
 
 #include "c_printf.h"
 #define diff_timeval_us(t2, t1) (((t2).tv_sec - (t1).tv_sec) * 1000000l )+ ((t2).tv_usec - (t1).tv_usec)
+void swap_1(char * str){
+    char *c = str;
+    int i, j;
+    int m = strlen(str) ;
+	for (i = 0, j = m-1; i<j; i++, j--) {
+			// swap without temporary
+			c[i] ^= c[j];
+			c[j] ^= c[i];
+			c[i] ^= c[j];
+	}
+    
+}
 
+void swap_2(char * str){
+	char tmp_char;
+    int m = strlen(str) -1;
+    char *ptr = str + m;
+    char * ptr_reverse = str;
+    while(ptr_reverse < ptr) {
+		tmp_char = *ptr;
+		*ptr--= *ptr_reverse;
+		*ptr_reverse++ = tmp_char;
+	}
+
+
+}
+
+void swap_3(char * str){
+    int m = strlen(str) -1;
+    char *ptr = str + m;
+    char * ptr_reverse = str;
+    while(ptr_reverse < ptr) {
+        *ptr_reverse ^= *ptr;
+        *ptr ^= *ptr_reverse;
+        *ptr_reverse++ ^= *ptr--;
+	}
+    
+}
 
 int main(void){
 	char msg[512];
@@ -11,8 +48,58 @@ int main(void){
 	int i;
 	double prec = 0.00001;
 	struct timeval time_begin, time_end;
-	const int number_of_values = 10000;
+	const int number_of_values = 1000000;
 	double value[number_of_values];
+
+
+    char  string_test [512];
+    
+    strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
+	gettimeofday(&time_begin, NULL);
+	for(i = 0; i < number_of_values; i++){
+        swap_1(string_test);
+	}
+	gettimeofday(&time_end, NULL);
+	printf("swap1: %lu us. '%s'\n", diff_timeval_us(time_end, time_begin), string_test);
+    
+    strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
+	gettimeofday(&time_begin, NULL);
+	for(i = 0; i < number_of_values; i++){
+        swap_2(string_test);
+	}
+	gettimeofday(&time_end, NULL);
+	printf("swap2: %lu us. '%s'\n", diff_timeval_us(time_end, time_begin), string_test);
+    
+    strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
+	gettimeofday(&time_begin, NULL);
+	for(i = 0; i < number_of_values; i++){
+        swap_3(string_test);
+	}
+	gettimeofday(&time_end, NULL);
+	printf("swap3: %lu us. '%s'\n", diff_timeval_us(time_end, time_begin), string_test);
+   
+    return 0;
+    
+    
+    strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
+    swap_2(string_test);
+    printf("swap_2: '%s'\n", string_test);
+    swap_2(string_test);
+    printf("swap_2: '%s'\n", string_test);
+    
+    strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
+    swap_3(string_test);
+    printf("swap_3: '%s'\n", string_test);
+    swap_3(string_test);
+    printf("swap_3: '%s'\n", string_test);
+    return 0; 
+
+
+
+
+
+
+
 	// Init values;
 	i = 0;
 	value[i++] = 4.4232384298;
@@ -22,25 +109,26 @@ int main(void){
 	}
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
-			dtoa(value[i], number, prec);
+			dtoa(0.0, number, prec);
 	}
 	gettimeofday(&time_end, NULL);
 	printf("     dtoa: %lu us\n", diff_timeval_us(time_end, time_begin));
 	
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
-			sprintf(number,"%.5e", value[i]);
+			sprintf(number,"%.5e", 0.0);
 	}
 	gettimeofday(&time_end, NULL);
 	printf("  sprintf: %lu us\n", diff_timeval_us(time_end, time_begin));
 	
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
-			c_sprintf(number,"%.5e", value[i]);
+			c_sprintf(number,"%.5e", 0.0);
 	}
 	gettimeofday(&time_end, NULL);
 	printf("c_sprintf: %lu us\n", diff_timeval_us(time_end, time_begin));
-	
+    return 0;
+
 	for(i = 1; i < number_of_values; i+=991){
 			dtoa(value[i], number, prec);
 			printf("     dtoa: %s\n", number);

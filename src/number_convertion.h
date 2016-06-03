@@ -8,43 +8,26 @@
 // For printf
 #include <stdio.h>
 
-
-
-static inline char * c_round_str(char *s, char ** p, double n){
-	char * p_p = *p;
-	char * result = p_p - 1;
-	
-	bool overload = (n > 0 && *p_p == '9') || ( n > 0 && *p_p == '0')? true: false;
-	int increment = (n > 0 && *p_p > '5') ? 
-			overload? -9 : 1
-		: (n > 0 && *p_p < '6')? 
-			overload ? 9 : -1
-		: 0;
-	while(increment){
-		--p_p;
-		if( *p_p == '.') --p_p;
-		*(p_p) += increment;
-		increment = 0;
-		if(overload){
-			overload = (n > 0 && *p_p == '9') || ( n > 0 && *p_p == '0')? true: false;
-			increment = (n > 0 && *p_p > '5') ? 
-					overload? -9 : 1
-				: (n > 0 && *p_p < '6')? 
-					overload ? 9 : -1
-				: 0;
-		}
+static inline void mem_reverse(char * ptr, char* ptr_end){
+    char tmp_char;
+    while(ptr < ptr_end) {
+		tmp_char = *ptr_end;
+		*ptr_end--= *ptr;
+		*ptr++ = tmp_char;
 	}
-
-	return result;
-
 }
+
+
 
 /**
    * Double to ASCII
     */
 static inline char * dtoa(double n,char *s,  int precision_with) {
-    double PRECISION = pow(10, -(precision_with+1));
-    char* p_dot = NULL;
+//    double PRECISION = pow(10, -(precision_with+1));
+    if(precision_with <= 0){
+        precision_with =1;
+    }
+    char* p_tmp = NULL;
 	char *c = s;
 	// handle special cases
 	if (isnan(n)) {
@@ -60,8 +43,15 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 		*s++ = 'n';
 		*s++ = 'f';
 		return s;
-//		strcpy(s, "inf");
 	} else if (n == 0.0) {
+		*s++ = '0';
+		*s++ = '.';
+        while(precision_with--> 0){
+               *s++ = '0';
+        }
+		*s++ = 'e';
+		*s++ = '+';
+		*s++ = '0';
 		*s++ = '0';
 		return s;
 	} else {
@@ -71,7 +61,7 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 			n = -n;
 		// calculate magnitude
 		m = log10(n);
-		int useExp = (m >= 14 || (neg && m >= 9) || m <= -9);
+		int useExp = (m >= 1 || (neg && m >= 1) || m <= -1);
 		if (neg)
 			*(c++) = '-';
 		// set up for scientific notation
@@ -86,31 +76,27 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 			m = 0;
 		}
 		// convert the number
-		while (n > PRECISION || m >= 0) {
+        while(precision_with > 0){
+//		while (n > PRECISION || m >= 0) {
 			double weight = pow(10.0, m);
 			if (weight > 0 && !isinf(weight)) {
 				digit = floor(n / weight);
 				n -= (digit * weight);
 				*(c++) = '0' + digit;
 			}
-			if (m == 0 && n > 0){
+            if(p_tmp){
+                precision_with--;
+            }else if (m == 0 && n > 0){
 				*(c++) = '.';
-                p_dot = c;   
+                p_tmp = c;   
             }
 			m--;
 		}
 		
-//		printf("*C= %c\n", *(c-1));
-//		c_round_str(s, &c,n );
-        int pre = precision_with - (c - p_dot);
-        printf("n= %d\n", pre);
-	    while(pre--> 0){
-			*(c++) = '0';
-        }
-        
+//        if (m > 0) {
         if (useExp) {
 			// convert the exponent
-			int i, j;
+//			int i, j;
 			*(c++) = 'e';
 			if (m1 > 0) {
 				*(c++) = '+';
@@ -118,20 +104,18 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 				*(c++) = '-';
 				m1 = -m1;
 			}
+            p_tmp = c;   
 			m = 0;
 			while (m1 > 0) {
 				*(c++) = '0' + m1 % 10;
 				m1 /= 10;
 				m++;
 			}
-			c -= m;
-			for (i = 0, j = m-1; i<j; i++, j--) {
-				// swap without temporary
-				c[i] ^= c[j];
-				c[j] ^= c[i];
-				c[i] ^= c[j];
-			}
-			c += m;
+            while( ( c -p_tmp ) < 2 ){
+				*(c++) = '0';
+                m++;
+            }
+            mem_reverse(c - m, c-1);
 		}else{
 			*c++ = 'e';
 			*c++ = '+';
@@ -141,37 +125,10 @@ static inline char * dtoa(double n,char *s,  int precision_with) {
 		
 
 		*(c) = '\0';
-        printf("result= %s\n", s );
 	}
 	return c;
 }
 
-
-
-static inline char* itoa(unsigned long long value, char* result, int base) {
-	// check that the base if valid
-	if (base < 2 || base > 36) { *result = '\0'; return result; }
-
-	char* ptr = result, *ptr_reverse = result, tmp_char;
-	unsigned long long tmp_value;
-
-	do {
-		tmp_value = value;
-		value /= base;
-		*ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - ((unsigned long long)(value * base)))];
-	} while ( value );
-
-	// Apply negative sign
-	if (((signed long long)tmp_value) < 0) *ptr++ = '-';
-	char * end = ptr;
-	*ptr-- = '\0';
-	while(ptr_reverse < ptr) {
-		tmp_char = *ptr;
-		*ptr--= *ptr_reverse;
-		*ptr_reverse++ = tmp_char;
-	}
-	return end;
-}
 
 
 
@@ -195,20 +152,12 @@ static inline int skip_atoi_c(const char **s)
 #define SPECIAL	32		/* 0x */
 #define LARGE	64		/* use 'ABCDEF' instead of 'abcdef' */
 
-#define do_div_c(n, base) ({						\
-		unsigned int __base = (base);					\
-		unsigned int __rem;						\
-		__rem = ((unsigned long long)(n)) % __base;			\
-		(n) = ((unsigned long long)(n)) / __base;			\
-		__rem;								\
-		})
-
 
 static inline char * number_c(char * str, unsigned long long num, int base, int precision, int type, char sign, int left_pad, char left_pad_char)
 {
 	const char *digits = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
 	int i;
-	char* ptr = str, *ptr_reverse = str, tmp_char;
+	char* ptr = str, *ptr_reverse = str;
 	unsigned long long tmp_value, tmp_num = num;
 //	const char * special = "x0";
 
@@ -266,11 +215,7 @@ static inline char * number_c(char * str, unsigned long long num, int base, int 
 	char * end = ptr;
 //	*ptr-- = '\0';
 	--ptr;
-	while(ptr_reverse < ptr) {
-		tmp_char = *ptr;
-		*ptr--= *ptr_reverse;
-		*ptr_reverse++ = tmp_char;
-	}
+    mem_reverse(ptr_reverse, ptr);
 
 //	ptr = end;
 	// Add right spaces

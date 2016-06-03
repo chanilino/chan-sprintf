@@ -27,35 +27,6 @@ typedef struct{
 
 const int howmany = 10000000;
 
-int print_itoa (FILE *stream,
-		const struct printf_info *info,
-		const void *const *args)
-{
-	char buffer[64];
-	int n_tests;
-	char *end;
-	/* Format the output into a string. */
-	const int input = *((int*)args[0]);
-	/* Pad to the minimum field width and print to the stream. */
-	end = itoa(input,buffer, 10);
-	n_tests = end - buffer;
-	fwrite(buffer, n_tests, 1, stream);
-
-	/* Clean up and return. */
-	return n_tests;
-}
-
-int print_itoa_arginfo (const struct printf_info *info, size_t n, int* argtypes, int * size)
-{
-	/* We always take exactly one argument and this is a pointer to the
-	   structure.. */
-	if (n == sizeof(int)){
-		argtypes[0] = PA_INT;
-		size[0] = sizeof(int);
-	}
-	// Number of parameters procesed
-	return 1;
-}
 
 
 
