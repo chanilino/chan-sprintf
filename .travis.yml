@@ -1,30 +1,30 @@
 language: c
 compiler:
-        - gcc-4.6
-        - gcc-4.9
-        - gcc-5.2
-        - gcc-6.1
-        - clang
+    - gcc-4.6
+    - gcc-4.9
+    - gcc-5
+    - gcc-6
+    - clang
 addons:
-        apt:
-                sources:
-                        -  george-edison55-precise-backports # cmake 3.2.3 
-                        -  ubuntu-toolchain-r-test # gcc versions
-                packages:
-                        - gcc-4.9
-                        - gcc-5
-                        - gcc-6
-                        - cmake
-                        - cmake-data
-                        - check
+    apt:
+        sources:
+            -  george-edison55-precise-backports # cmake 3.2.3 
+            -  ubuntu-toolchain-r-test # gcc versions
+        packages:
+            - gcc-4.9
+            - gcc-5
+            - gcc-6
+            - cmake
+            - cmake-data
+            - check
 
 
 script: ls -l /usr/bin/gc* ; mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
 
 after_failure:
-        - cat /tmp/sumary_test.txt
-        - rm /tmp/sumary_test.txt
+    - cat /tmp/sumary_test.txt
+    - rm /tmp/sumary_test.txt
 
 after_success:
-        - cat /tmp/sumary_test.txt
-        - rm /tmp/sumary_test.txt
+    - cat /tmp/sumary_test.txt
+    - rm /tmp/sumary_test.txt
