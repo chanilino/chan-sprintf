@@ -10,7 +10,7 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap);
 static inline int c_sprintf(char* str, const char *format, ...)
 	    __attribute__((format(printf, 2, 3)));
 
-#define PADDING(p_str, field_width, char_padding, len)	while (--(field_width) > len) *(p_str)++ = char_padding;
+#define PADDING(p_str, field_width, char_padding, len)	while (--(field_width) > (len)) *(p_str)++ = char_padding;
 
 #define NUMBER_CONV(str, num, base, qualifier,flags, args, field_width, precision) switch(qualifier){\
 	case 'l':\
@@ -182,12 +182,13 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 				case 's':
 						  s = va_arg(ap, char *);
 						  if (!s){	
-							  s = NULL_STRING;
+							  s = (char*)NULL_STRING;
 						  }
-						  len = strnlen(s, precision) - 1;
-						  if (!(flags & LEFT)) PADDING(p_out, field_width, ' ', len);
-						  p_out = c_concat(p_out, s);
-						  PADDING(p_out, field_width, ' ', len);
+						  len = strnlen(s, precision);
+						  if (!(flags & LEFT)) PADDING(p_out, field_width, ' ', len - 1);
+                          memcpy(p_out, s, len);
+                          p_out += len;
+						  PADDING(p_out, field_width, ' ', len - 1);
 						  ++p_in; 
 						  printed = true;
 						  break;

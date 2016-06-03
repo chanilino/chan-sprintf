@@ -144,15 +144,6 @@ static inline char * dtoa(double n,char *s,  double PRECISION) {
 
 
 
-static inline char* c_concat(char* dest, const char * source){
-	char* p_out = dest;
-	char* p_in = (char*)source;
-	while(*p_in != 0){
-		*p_out++ = *p_in++;
-	}
-	return p_out;
-}
-
 static inline char* itoa(unsigned long long value, char* result, int base) {
 	// check that the base if valid
 	if (base < 2 || base > 36) { *result = '\0'; return result; }
