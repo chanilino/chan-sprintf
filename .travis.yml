@@ -1,6 +1,9 @@
 language: c
 compiler:
-        - gcc
+        - gcc-4.6
+        - gcc-4.9
+        - gcc-5.2
+        - gcc-6.1
         - clang
 addons:
         apt:
@@ -8,7 +11,9 @@ addons:
                         -  george-edison55-precise-backports # cmake 3.2.3 
                         -  ubuntu-toolchain-r-test # gcc versions
                 packages:
+                        - gcc-4.9
                         - gcc-5
+                        - gcc-6
                         - cmake
                         - cmake-data
                         - check
