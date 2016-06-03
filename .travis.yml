@@ -1,25 +1,62 @@
 language: c
-compiler:
-    - gcc-4.6
-    - gcc-4.9
-    - gcc-5
-    - gcc-6
-    - clang
 addons:
     apt:
-        sources:
+        sources: &default_sources
             -  george-edison55-precise-backports # cmake 3.2.3 
             -  ubuntu-toolchain-r-test # gcc versions
-        packages:
+        packages: &default_packages
             - gcc-4.9
             - gcc-5
             - gcc-6
             - cmake
             - cmake-data
             - check
+matrix:
+    include:
+        - compiler: gcc-4.6
+          addons:
+            apt:
+                packages:
+                    - *default_packages
+                sources:
+                    - *default_sources
 
+        - compiler: clang-3-4
+          addons:
+            apt:
+                packages:
+                    - *default_packages
+                sources:
+                    - *default_sources
 
-script: ls -l /usr/bin/gc* ; mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
+        - compiler: gcc-4.9
+          addons:
+            apt:
+                packages:
+                    - *default_packages
+                    - gcc-4.9
+                sources:
+                    - *default_sources
+
+        - compiler: gcc-5
+          addons:
+            apt:
+                packages:
+                    - *default_packages
+                    - gcc-5
+                sources:
+                    - *default_sources
+
+        - compiler: gcc-6
+          addons:
+            apt:
+                packages:
+                    - *default_packages
+                    - gcc-6
+                sources:
+                    - *default_sources
+
+script: mkdir -p tests/build && cd tests/build && cmake .. && make && ./tests-printf  
 
 after_failure:
     - cat /tmp/sumary_test.txt
@@ -28,3 +65,4 @@ after_failure:
 after_success:
     - cat /tmp/sumary_test.txt
     - rm /tmp/sumary_test.txt
+
