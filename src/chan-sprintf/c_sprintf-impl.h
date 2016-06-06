@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <string.h>
-#include "number_convertion.h"
+#include "chan-sprintf/c_num_conv-impl.h"
 
 
 static inline int c_vsprintf(char* str, const char *format, va_list ap);
@@ -29,27 +29,17 @@ static inline int c_sprintf(char* str, const char *format, ...)
 }\
 
 
-#define NUMBER_CONV(str, num, base, qualifier,flags, args, field_width, precision) switch(qualifier){\
-	case 'l':\
-			 num = (flags & SIGN)?(signed long long)va_arg(args, signed long) :va_arg(args, unsigned long);\
-	break;\
-	case 'q':\
-			 num = (flags & SIGN)?va_arg(args, signed long long) :va_arg(args, unsigned long long);\
-	break;\
-	case 'Z':\
-			 num = va_arg(args, size_t);\
-	break;\
-	case 'h':\
-			 num = (flags & SIGN) ? (signed long long) (signed short) va_arg(args, int): (unsigned short)va_arg(args, int);\
-	break;\
-	default:\
-			num = (flags & SIGN) ? (signed long long)va_arg(args, int): va_arg(args, unsigned int);\
-}\
+#define NUMBER_CONV(str, num, base, qualifier,flags, args, field_width, precision) \
+            NUMBER_TYPE(qualifier, num, flags, args);\
 {\
 	if (flags & LEFT) flags &= ~ZEROPAD;\
 	char c = (flags & ZEROPAD) ? '0' : ' ';\
 	char* p_str = str;\
-	str = number_c(str, num, base, precision, flags, sign, !(flags & LEFT)?field_width:0, c);\
+    const char* special ="";\
+    if (flags & SPECIAL){\
+        special = (base == 16)?  (flags & LARGE)? "X0" :  "x0": "0";\
+    }\
+	str = number_c(str, num, base, precision, flags, special, !(flags & LEFT)?field_width:0, c);\
 	len = str - p_str -1; \
 	if ((flags & LEFT)) PADDING(p_out, field_width, ' ', len);   \
 }
@@ -68,7 +58,6 @@ static inline int skip_vsprintf( const char *format, va_list ap){
 	int number_tmp;
 	unsigned long long num;
 	char* str_tmp;
-	char sign;
 	int len;
 	while(1){
         while(*p_in != 0 && *p_in != '%' ){
@@ -85,7 +74,6 @@ static inline int skip_vsprintf( const char *format, va_list ap){
 		precision = -1;
 		qualifier = -1;
 		base = 10;
-		sign = 0;
 		++p_in;
 		printed = false;
 		while(!printed){ 
@@ -96,10 +84,8 @@ static inline int skip_vsprintf( const char *format, va_list ap){
 					p_in++;
 					break;
 				case '+': flags |= PLUS;
-						  sign = *p_in++;
 						  break;
 				case ' ': flags |= SPACE;
-						  sign = *p_in++;
 						  break;
 				case '#': flags |= SPECIAL;
 						  ++p_in; 
@@ -259,7 +245,6 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 	int number_tmp;
 	unsigned long long num;
 	char* str_tmp;
-	char sign;
 	int len;
 	*p_out = 0;
 	while(1){
@@ -274,7 +259,6 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 		precision = -1;
 		qualifier = -1;
 		base = 10;
-		sign = 0;
 		++p_in;
 		printed = false;
 		while(!printed){ 
@@ -285,10 +269,8 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 					p_in++;
 					break;
 				case '+': flags |= PLUS;
-						  sign = *p_in++;
 						  break;
 				case ' ': flags |= SPACE;
-						  sign = *p_in++;
 						  break;
 				case '#': flags |= SPECIAL;
 						  ++p_in; 
@@ -381,7 +363,7 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 						  }
 						  p_out = number_c(p_out,
 								  (unsigned long) va_arg(ap, void *), 16,
-								  field_width, precision, flags, 0, 0);
+								   precision, flags, "", 0, 0);
 						  ++p_in; 
 						  printed = true;
 						  break;

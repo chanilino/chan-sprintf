@@ -5,8 +5,8 @@
 #include <sys/time.h>
 #include <printf.h>
 #include <string.h>
-#include "c_printf.h"
-#include "assert.h"
+#include <assert.h>
+#include "chan-sprintf.h"
 
 #include "tests-printf.h"
 

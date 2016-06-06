@@ -3,7 +3,8 @@
 #include <printf.h>
 #include <string.h>
 #include <limits.h>
-#include "c_printf.h"
+#include "chan-sprintf.h"
+
 #include "tests-printf.h"
 
 #define compare_print_func(f1, str_sprintf, n_sprintf ,f2, str_csprintf, n_csprintf ,fmt, ...) \

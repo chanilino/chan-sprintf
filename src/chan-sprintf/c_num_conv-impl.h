@@ -194,7 +194,7 @@ static inline int count_digits(unsigned long long num, int base, int precision, 
 
 }
 
-static inline char * number_c(char * str, unsigned long long num, int base, int precision, int type, char sign, int left_pad, char left_pad_char)
+static inline char * number_c(char * str, unsigned long long num, int base, int precision, int type, const char* special, int left_pad, char left_pad_char)
 {
 	const char *digits = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
 	int i;
@@ -211,7 +211,7 @@ static inline char * number_c(char * str, unsigned long long num, int base, int 
 
 	if ((type & SIGN) && (((signed long long)num) < 0ll) )  {
 		tmp_num = -num;
-		sign = '-';	
+		special = "-";	
 	}else{
 		tmp_num = num;
 	}
@@ -227,14 +227,10 @@ static inline char * number_c(char * str, unsigned long long num, int base, int 
 	while (i < precision--)
 		*ptr++ = '0';
 
-	// Add SIGN
-	if (sign) {
-			*ptr++  = sign;
-	}
 
-//	while(*special){
-//		*ptr++ = *special++;
-//	}	
+	while(*special){
+		*ptr++ = *special++;
+	}	
 		
 //	// Add special prefix
 //	if (type & SPECIAL){

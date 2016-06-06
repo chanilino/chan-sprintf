@@ -27,7 +27,6 @@ include_directories(
 
 set(
 	LIB_DEP_C_PRINTF
-	chanprintf_static
 	${CHECK_LIBRARIES}
 )
 
