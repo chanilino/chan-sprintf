@@ -138,7 +138,7 @@ static inline char * dtoa(double n,char *s,  int precision_with, bool use_exp) {
 
 
 
-
+//TODO: change to itoa
 static inline int skip_atoi_c(const char **s)
 {
 	int i, c;
@@ -159,6 +159,40 @@ static inline int skip_atoi_c(const char **s)
 #define SPECIAL	32		/* 0x */
 #define LARGE	64		/* use 'ABCDEF' instead of 'abcdef' */
 
+
+static inline int count_digits(unsigned long long num, int base, int precision, int type){
+    int count = 0;
+	unsigned long long tmp_num = num;
+//	const char * special = "x0";
+
+	if (base < 2 || base > 36)
+		return 0;
+
+	if ((type & SIGN) && (((signed long long)num) < 0ll) )  {
+	    ++count;
+		tmp_num = -num;
+	}    
+
+    do {
+		tmp_num /= base;
+        ++count;
+    } while ( tmp_num );
+    
+    if (count < precision){
+        count = (precision);
+    }
+		
+//	// Add special prefix
+	if (type & SPECIAL){
+		if (base==8){
+            ++count;
+            }else if (base==16) {
+                count += 2;
+		}
+	}
+	return count;
+
+}
 
 static inline char * number_c(char * str, unsigned long long num, int base, int precision, int type, char sign, int left_pad, char left_pad_char)
 {

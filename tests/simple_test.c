@@ -46,6 +46,7 @@ int main(void){
 	char msg[512];
 	char number[128];
 	int i;
+    int n;
 	double prec = 0.00001;
 	struct timeval time_begin, time_end;
 	const int number_of_values = 1000000;
@@ -54,22 +55,21 @@ int main(void){
 
     char  string_test [512];
     
-    strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
-        swap_1(string_test);
+        n = snprintf(NULL,0, "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
 	}
 	gettimeofday(&time_end, NULL);
-	printf("swap1: %lu us. '%s'\n", diff_timeval_us(time_end, time_begin), string_test);
+	printf("  sprintf: %lu us: %d '\n", diff_timeval_us(time_end, time_begin), n );
     
     strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
-        swap_2(string_test);
+        n = skip_sprintf( "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
 	}
 	gettimeofday(&time_end, NULL);
-	printf("swap2: %lu us. '%s'\n", diff_timeval_us(time_end, time_begin), string_test);
-    
+	printf("c_sprintf: %lu us. '%d'\n", diff_timeval_us(time_end, time_begin), n);
+    return 0; 
     strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
@@ -109,7 +109,7 @@ int main(void){
 	}
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
-			dtoa(0.0, number, prec);
+			//dtoa(0.0, number, prec);
 	}
 	gettimeofday(&time_end, NULL);
 	printf("     dtoa: %lu us\n", diff_timeval_us(time_end, time_begin));
@@ -123,14 +123,14 @@ int main(void){
 	
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
-			c_sprintf(number,"%.5e", 0.0);
+			skip_sprintf(number,"%.5e", 0.0);
 	}
 	gettimeofday(&time_end, NULL);
 	printf("c_sprintf: %lu us\n", diff_timeval_us(time_end, time_begin));
     return 0;
 
 	for(i = 1; i < number_of_values; i+=991){
-			dtoa(value[i], number, prec);
+			//dtoa(value[i], number, prec);
 			printf("     dtoa: %s\n", number);
 			printf("sprintf e: %.5e\n", value[i]);
 			c_sprintf(number,"c_print e: %.5e\n", value[i]);
