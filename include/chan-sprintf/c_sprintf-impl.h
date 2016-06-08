@@ -345,21 +345,14 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 						  ++p_in; 
 						  printed = true;
 						  break;	
+				case 'X':
+						  flags |= LARGE;
 				case 'x': 
 						  base = 16;
 						  NUMBER_CONV(p_out, num, base,qualifier,flags, ap, field_width, precision); 
 						  ++p_in; 
 						  printed = true;
 						  break;	
-
-				case 'X':
-						  flags |= LARGE;
-						  NUMBER_CONV(p_out, num, base,qualifier,flags, ap, field_width, precision); 
-						  ++p_in; 
-						  printed = true;
-						  break;
-
-
 				case 'p':
 						  if (field_width == -1) {
 							  field_width = 2*sizeof(void *);

@@ -80,6 +80,45 @@ START_TEST(test_integer)
 }
 END_TEST
 
+START_TEST(test_other_bases)
+{
+	char str_sprintf[512];
+	char str_csprintf[512];
+	int n_sprintf, n_csprintf;
+    //INTEGERS
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "Hola %x", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "%X:%x:%X", 7, 11, 11);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MAX %x", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "MIN %x", INT_MIN);
+    // %i
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "Hola %x", 3534555);
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5x'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5x'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%5x'", INT_MIN);
+    
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%05x'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%05x'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%05x'", INT_MIN);
+	
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%-5x'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%-5x'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "padding '%-5x'", INT_MIN);
+	
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%.5x'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%.5x'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%.5x'", INT_MIN);
+	
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%3.5x'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%3.5x'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%3.5x'", INT_MIN);
+    
+    compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%-3.5x'", 7);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%-3.5x'", INT_MAX);
+	compare_print_func(sprintf,str_sprintf, n_sprintf, c_sprintf,str_csprintf, n_csprintf, "precision '%-3.5x'", INT_MIN);
+	
+}
+END_TEST
+
 START_TEST(test_long)
 {
 	char str_sprintf[512];
@@ -317,6 +356,10 @@ Suite* suite_functional_printf(void) {
 	TCase* tc_long = tcase_create("Test long");
 	tcase_add_test(tc_long, test_long);
 	suite_add_tcase(s, tc_long);
+	
+    TCase* tc_other_bases = tcase_create("Test hex and octal bases");
+	tcase_add_test(tc_other_bases, test_other_bases);
+	suite_add_tcase(s, tc_other_bases);
 	
 	TCase* tc_exp = tcase_create("Test exp");
 	tcase_add_test(tc_exp, test_exp);
