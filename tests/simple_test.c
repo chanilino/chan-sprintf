@@ -2,6 +2,8 @@
 #include <sys/time.h>
 
 #include "chan-sprintf.h"
+#include "chan-sprintf/chan-cache-sprintf.h"
+
 #define diff_timeval_us(t2, t1) (((t2).tv_sec - (t1).tv_sec) * 1000000l )+ ((t2).tv_usec - (t1).tv_usec)
 void swap_1(char * str){
     char *c = str;
@@ -54,6 +56,82 @@ int main(void){
 
 
     char  string_test [512];
+    cache_sprintf c1 = {0};	
+    cache_sprintf c2 = {0};	
+    cache_sprintf c3 = {0};	
+    cache_sprintf c4 = {0};	
+    cache_sprintf c5 = {0};	
+    cache_sprintf c6 = {0};	
+
+    c_cache_literal * l;
+    c_cache_integer * c_i;
+    c_cache_string * c_s;
+
+    c1.type = C_CACHE_LITERAL; 
+    l = &c1.m_literal;
+    l->literal = "Hola ";
+    l->len = strlen(l->literal);
+    c1.next = &c2;
+
+    c2.type = C_CACHE_INTEGER; 
+    c_i = &c2.m_integer;
+    c_i->base =10;
+    c_i->precision = -1;
+	c_i->field_width = -1;
+	c_i->qualifier = -1;
+    c2.next = &c3;
+    
+    c3.type = C_CACHE_LITERAL; 
+    l = &c3.m_literal;
+    l->literal = " otra vez: ";
+    l->len = strlen(l->literal);
+    c3.next = &c4;
+
+    c4.type = C_CACHE_STRING; 
+    c_s = &c4.m_string;
+    c_s->precision = -1;
+	c_s->field_width = -1;
+    c4.next = &c5;
+    
+    
+    c5.type = C_CACHE_LITERAL; 
+    l = &c5.m_literal;
+    l->literal = ": ";
+    l->len = strlen(l->literal);
+    c5.next = &c6;
+    
+    c6.type = C_CACHE_INTEGER; 
+    c_i = &c6.m_integer;
+    c_i->base =10;
+    c_i->precision = -1;
+	c_i->field_width = -1;
+	c_i->qualifier = -1;
+
+    gettimeofday(&time_begin, NULL);
+	for(i = 0; i < number_of_values; i++){
+        n = _proccess_cache( string_test, &c1 , 34, "Ahí va este string", 3243289);
+	}
+	gettimeofday(&time_end, NULL);
+	printf("    cache: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
+    printf("cache:  '%s'\n", string_test);
+    
+    gettimeofday(&time_begin, NULL);
+	for(i = 0; i < number_of_values; i++){
+        n = c_sprintf( string_test, "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
+	}
+	gettimeofday(&time_end, NULL);
+	printf("c_sprintf: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
+    printf("nocache:'%s'\n", string_test);
+    return 0;
+
+
+    gettimeofday(&time_begin, NULL);
+	for(i = 0; i < number_of_values; i++){
+        n = c_sprintf( string_test, "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
+	}
+	gettimeofday(&time_end, NULL);
+	printf("c_sprintf: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
+    return 0;
     
 	gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
@@ -63,12 +141,6 @@ int main(void){
 	printf("  sprintf: %lu us: %d\n", diff_timeval_us(time_end, time_begin), n);
     
     strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
-	gettimeofday(&time_begin, NULL);
-	for(i = 0; i < number_of_values; i++){
-        n = skip_sprintf( "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
-	}
-	gettimeofday(&time_end, NULL);
-	printf("c_sprintf: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
     return 0; 
     strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
 	gettimeofday(&time_begin, NULL);
