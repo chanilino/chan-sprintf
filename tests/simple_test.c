@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-#include "c_printf.h"
+#include "chan-sprintf.h"
 #define diff_timeval_us(t2, t1) (((t2).tv_sec - (t1).tv_sec) * 1000000l )+ ((t2).tv_usec - (t1).tv_usec)
 void swap_1(char * str){
     char *c = str;
@@ -60,7 +60,7 @@ int main(void){
         n = snprintf(NULL,0, "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
 	}
 	gettimeofday(&time_end, NULL);
-	printf("  sprintf: %lu us: %d '\n", diff_timeval_us(time_end, time_begin), n );
+	printf("  sprintf: %lu us: %d\n", diff_timeval_us(time_end, time_begin), n);
     
     strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
 	gettimeofday(&time_begin, NULL);
@@ -68,7 +68,7 @@ int main(void){
         n = skip_sprintf( "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
 	}
 	gettimeofday(&time_end, NULL);
-	printf("c_sprintf: %lu us. '%d'\n", diff_timeval_us(time_end, time_begin), n);
+	printf("c_sprintf: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
     return 0; 
     strcpy(string_test,  "hola este es mi mundo al reves mucho y muy guay");
 	gettimeofday(&time_begin, NULL);

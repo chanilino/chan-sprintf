@@ -19,10 +19,10 @@ endif(CHECK_FOUND)
 
 
 include_directories("./")
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../src ${CMAKE_CURRENT_BINARY_DIR}/c_sprintf)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CURRENT_BINARY_DIR}/c_sprintf)
 include_directories( 
 	"./"
-	"${CMAKE_CURRENT_SOURCE_DIR}/../src"
+	"${CMAKE_CURRENT_SOURCE_DIR}/../include"
 	)
 
 set(
