@@ -38,6 +38,8 @@ static inline int c_sprintf(char* str, const char *format, ...)
     const char* special ="";\
     if (flags & SPECIAL){\
         special = (base == 16)?  (flags & LARGE)? "X0" :  "x0": "0";\
+    }else if(flags & PLUS){ \
+        special = "+";\
     }\
 	str = number_c(str, num, base, precision, flags, special, !(flags & LEFT)?field_width:0, c);\
 	len = str - p_str -1; \
@@ -266,23 +268,22 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 		while(!printed){ 
 			switch(*p_in){
 				// Flags, field width and precision
-				case '-': 
-					flags |= LEFT;
-					p_in++;
-					break;
-				case '+': flags |= PLUS;
-					p_in++;
-						  break;
-				case ' ': flags |= SPACE;
-					p_in++;
-						  break;
-				case '#': flags |= SPECIAL;
-						  ++p_in; 
-						  break;
-				case '.':
-						  precision = 0;
-						  ++p_in; 
-						  break;
+                case '-': flags |= LEFT;
+                          p_in++;
+                          break;
+                case '+': flags |= PLUS;
+                          p_in++;
+                          break;
+                case ' ': flags |= SPACE;
+                          p_in++;
+                          break;
+                case '#': flags |= SPECIAL;
+                          ++p_in; 
+                          break;
+                case '.':
+                          precision = 0;
+                          ++p_in; 
+                          break;
 				case '0': 
 						  if(!( flags  || (precision != -1))){
 							  flags |= ZEROPAD; 
