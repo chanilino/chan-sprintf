@@ -84,8 +84,10 @@ static inline int skip_vsprintf( const char *format, va_list ap){
 					p_in++;
 					break;
 				case '+': flags |= PLUS;
+					p_in++;
 						  break;
 				case ' ': flags |= SPACE;
+					p_in++;
 						  break;
 				case '#': flags |= SPECIAL;
 						  ++p_in; 
@@ -269,8 +271,10 @@ static inline int c_vsprintf(char* str, const char *format, va_list ap){
 					p_in++;
 					break;
 				case '+': flags |= PLUS;
+					p_in++;
 						  break;
 				case ' ': flags |= SPACE;
+					p_in++;
 						  break;
 				case '#': flags |= SPECIAL;
 						  ++p_in; 

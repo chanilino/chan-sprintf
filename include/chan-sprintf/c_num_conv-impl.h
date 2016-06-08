@@ -159,27 +159,35 @@ static inline int skip_atoi_c(const char **s)
 #define SPECIAL	32		/* 0x */
 #define LARGE	64		/* use 'ABCDEF' instead of 'abcdef' */
 
+static double log_base[37] = {0};
+
+static inline double get_log_base(int base){
+    if (!log_base[base]){
+        log_base[base] = log(base);
+    }
+    return log_base[base];
+};
 
 static inline int count_digits(unsigned long long num, int base, int precision, int type){
     int count = 0;
 	unsigned long long tmp_num = num;
-//	const char * special = "x0";
 
-	if (base < 2 || base > 36)
+	if (base < 2 || base > 36){
 		return 0;
-
-	if ((type & SIGN) && (((signed long long)num) < 0ll) )  {
+    }
+    
+	if((type & SIGN) && (((signed long long)num) < 0ll)){
 	    ++count;
 		tmp_num = -num;
 	}    
 
-    do {
-		tmp_num /= base;
-        ++count;
-    } while ( tmp_num );
+    //Only init when you use it
+    // log base x of y = log10 x/ log10 y
+    int long_num = ceil(log(tmp_num) / get_log_base(base));
+    count += long_num;
     
-    if (count < precision){
-        count = (precision);
+    if (long_num < precision){
+        count = precision;
     }
 		
 //	// Add special prefix
@@ -191,7 +199,6 @@ static inline int count_digits(unsigned long long num, int base, int precision, 
 		}
 	}
 	return count;
-
 }
 
 static inline char * number_c(char * str, unsigned long long num, int base, int precision, int type, const char* special, int left_pad, char left_pad_char)
