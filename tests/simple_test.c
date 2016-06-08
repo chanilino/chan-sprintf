@@ -51,7 +51,7 @@ int main(void){
     int n;
 	double prec = 0.00001;
 	struct timeval time_begin, time_end;
-	const int number_of_values = 1000000;
+	const int number_of_values = 2000000;
 	double value[number_of_values];
 
 
@@ -67,13 +67,13 @@ int main(void){
     c_cache_integer * c_i;
     c_cache_string * c_s;
 
-    c1.type = C_CACHE_LITERAL; 
+    c1.process = proccess_cache_literal; 
     l = &c1.m_literal;
     l->literal = "Hola ";
-    l->len = strlen(l->literal);
+    l->len = 5;
     c1.next = &c2;
 
-    c2.type = C_CACHE_INTEGER; 
+    c2.process = proccess_cache_integer; 
     c_i = &c2.m_integer;
     c_i->base =10;
     c_i->precision = -1;
@@ -81,39 +81,34 @@ int main(void){
 	c_i->qualifier = -1;
     c2.next = &c3;
     
-    c3.type = C_CACHE_LITERAL; 
+    c3.process = proccess_cache_literal; 
     l = &c3.m_literal;
     l->literal = " otra vez: ";
-    l->len = strlen(l->literal);
+    l->len = sizeof(" otra vez: ") -1;
     c3.next = &c4;
 
-    c4.type = C_CACHE_STRING; 
+    c4.process = proccess_cache_string; 
     c_s = &c4.m_string;
     c_s->precision = -1;
 	c_s->field_width = -1;
     c4.next = &c5;
     
     
-    c5.type = C_CACHE_LITERAL; 
+    c5.process = proccess_cache_literal; 
     l = &c5.m_literal;
     l->literal = ": ";
-    l->len = strlen(l->literal);
+    l->len = 3;
     c5.next = &c6;
     
-    c6.type = C_CACHE_INTEGER; 
+    c6.process = proccess_cache_integer; 
     c_i = &c6.m_integer;
     c_i->base =10;
     c_i->precision = -1;
 	c_i->field_width = -1;
 	c_i->qualifier = -1;
+    
+    
 
-    gettimeofday(&time_begin, NULL);
-	for(i = 0; i < number_of_values; i++){
-        n = _proccess_cache( string_test, &c1 , 34, "Ahí va este string", 3243289);
-	}
-	gettimeofday(&time_end, NULL);
-	printf("    cache: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
-    printf("cache:  '%s'\n", string_test);
     
     gettimeofday(&time_begin, NULL);
 	for(i = 0; i < number_of_values; i++){
@@ -122,6 +117,16 @@ int main(void){
 	gettimeofday(&time_end, NULL);
 	printf("c_sprintf: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
     printf("nocache:'%s'\n", string_test);
+    
+    
+    gettimeofday(&time_begin, NULL);
+	for(i = 0; i < number_of_values; i++){
+        n = _proccess_cache( string_test, &c1 , 34, "Ahí va este string", 3243289);
+	}
+	gettimeofday(&time_end, NULL);
+	printf("    cache: %lu us. %d\n", diff_timeval_us(time_end, time_begin), n);
+    printf("cache:  '%s'\n", string_test);
+    
     return 0;
 
 
