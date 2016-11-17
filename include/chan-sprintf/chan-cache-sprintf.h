@@ -5,16 +5,15 @@
 
 #include "chan-sprintf/c_string-util.h"
 
-typedef struct _cache_sprintf cache_sprintf;
 
-typedef int (*procces_cache_func)(char* p_str, cache_sprintf* cache, va_list ap);
+typedef int (*procces_cache_func)(char* p_str, void* cache, va_list ap);
 
-typedef enum{
-    C_CACHE_LITERAL,
-    C_CACHE_STRING,
-    C_CACHE_INTEGER,
-    C_CACHE_FLOAT,
-}c_cache_sprint_type;
+typedef struct _cache_sprintf{
+    procces_cache_func process;
+    struct _cache_sprintf* next;
+    void * data;
+}cache_sprintf;
+
 
 typedef struct{
     const char* literal;
@@ -44,17 +43,6 @@ typedef struct{
     int field_width;
 }c_cache_float;
 
-struct _cache_sprintf{
-    procces_cache_func process;
-//    c_cache_sprint_type type;
-    struct _cache_sprintf* next;
-    union{
-        c_cache_literal m_literal;
-        c_cache_string m_string;
-        c_cache_integer m_integer;
-        c_cache_float m_float;
-    };
-};
 
 
 void create_cache( const char * fmt, ...){
@@ -62,13 +50,13 @@ void create_cache( const char * fmt, ...){
 }
 
 static inline int proccess_cache_literal(char* p_str, cache_sprintf* c, va_list ap){
-    c_cache_literal* cache = &c->m_literal;
+    c_cache_literal* cache = c->data;
     memcpy(p_str, cache->literal, cache->len);
     return cache->len;
 }
 
 static inline int proccess_cache_string(char* p_str, cache_sprintf* c, va_list ap){
-    c_cache_string* cache = &c->m_string; 
+    c_cache_string* cache = c->data; 
     char *str = p_str;
     int len;
     char *str_tmp = NULL;
@@ -85,7 +73,7 @@ static inline int proccess_cache_string(char* p_str, cache_sprintf* c, va_list a
 }
 
 static inline int proccess_cache_integer(char* p_str, cache_sprintf* c, va_list ap){
-    c_cache_integer* cache = &c->m_integer;
+    c_cache_integer* cache = c->data;
     unsigned long long num;
     char * p_out = p_str;
     NUMBER_CONV(p_out, num, cache->base, cache->qualifier,cache->flags, ap, cache->field_width, cache->precision);

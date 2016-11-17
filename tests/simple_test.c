@@ -63,54 +63,60 @@ int main(void){
     cache_sprintf c5 = {0};	
     cache_sprintf c6 = {0};	
 
-    c_cache_literal * l;
-    c_cache_integer * c_i;
-    c_cache_string * c_s;
+    c_cache_literal *l;
+    c_cache_integer *c_i;
+    c_cache_string *c_s;
 
-    c1.process = proccess_cache_literal; 
-    l = &c1.m_literal;
+    l = calloc(1, sizeof(c_cache_literal));
     l->literal = "Hola ";
-    l->len = 5;
+    l->len = strlen(l->literal);
+    c1.process = proccess_cache_literal; 
+    c1.data = l;
     c1.next = &c2;
 
-    c2.process = proccess_cache_integer; 
-    c_i = &c2.m_integer;
+    c_i = calloc(1, sizeof(c_cache_integer));
     c_i->base =10;
     c_i->precision = -1;
 	c_i->field_width = -1;
 	c_i->qualifier = -1;
+    c2.process = proccess_cache_integer; 
+    c2.data = c_i;
     c2.next = &c3;
     
-    c3.process = proccess_cache_literal; 
-    l = &c3.m_literal;
+    l = calloc(1, sizeof(c_cache_literal));
     l->literal = " otra vez: ";
-    l->len = sizeof(" otra vez: ") -1;
+    l->len = strlen(l->literal);
+    c3.process = proccess_cache_literal; 
+    c3.data = l;
     c3.next = &c4;
 
-    c4.process = proccess_cache_string; 
-    c_s = &c4.m_string;
+    c_s = calloc(1,sizeof(c_cache_string));
     c_s->precision = -1;
 	c_s->field_width = -1;
+    c4.process = proccess_cache_string; 
+    c4.data = c_s;
     c4.next = &c5;
     
     
-    c5.process = proccess_cache_literal; 
-    l = &c5.m_literal;
+    l = calloc(1, sizeof(c_cache_literal));
     l->literal = ": ";
-    l->len = 3;
+    l->len = strlen(l->literal);
+    c5.process = proccess_cache_literal; 
+    c5.data = l;
     c5.next = &c6;
     
     c6.process = proccess_cache_integer; 
-    c_i = &c6.m_integer;
+    c_i = calloc(1, sizeof(c_cache_integer));
     c_i->base =10;
     c_i->precision = -1;
 	c_i->field_width = -1;
 	c_i->qualifier = -1;
+    c6.data = c_i;
     
     
 
-    
-    gettimeofday(&time_begin, NULL);
+    struct timezone tz; 
+    gettimeofday(&time_begin, &tz);
 	for(i = 0; i < number_of_values; i++){
         n = c_sprintf( string_test, "Hola %d otra vez: %s: %d", 34, "Ahí va este string", 3243289);
 	}
